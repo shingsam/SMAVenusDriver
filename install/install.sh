@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# for testing purposes
+# for testing purposes #
 #ROOT_DIR="/tmp/venus"
 #mkdir -p ${ROOT_DIR}/data/etc
 #mkdir -p ${ROOT_DIR}/var/log
@@ -35,7 +35,8 @@ then
     opkg install python-misc python-distutils python-numbers python-html python-ctypes python-pkgutil
     opkg install python-unittest python-difflib python-compile gcc binutils python-dev python-unixadmin python-xmlrpc
 
-    wget https://bootstrap.pypa.io/get-pip.py
+    #opkg list | grep pip
+    wget https://bootstrap.pypa.io/pip/get-pip.py
     python get-pip.py
     rm get-pip.py
 
@@ -59,7 +60,7 @@ then
   cp $template_udev_file $udev_file
 
   # grab the details of the canable usb adapter
-  value=`usb-devices | grep -A2 canable.io`
+  value=`usb-devices | grep -A2 budgetcan`
 
   # get the serial number of the canable usb adapter
   var="$(cut -d'=' -f 2 <<< $value)"
