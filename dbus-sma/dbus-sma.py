@@ -20,7 +20,7 @@ import yaml
 
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
-import gobject
+from gi.repository import GLib
 
 import can
 from can.bus import BusState
@@ -301,9 +301,9 @@ class SmaDriver:
     self._changed = True
 
     # create timers (time in msec)
-    gobject.timeout_add(2000, exit_on_error, self._can_bus_txmit_handler)
-    gobject.timeout_add(2000, exit_on_error, self._energy_handler)
-    gobject.timeout_add(20, exit_on_error, self._parse_can_data_handler)
+    GLib.timeout_add(2000, exit_on_error, self._can_bus_txmit_handler)
+    GLib.timeout_add(2000, exit_on_error, self._energy_handler)
+    GLib.timeout_add(20, exit_on_error, self._parse_can_data_handler)
 
 #----
   def __del__(self):
@@ -316,7 +316,7 @@ class SmaDriver:
   def run(self):
     # Start and run the mainloop
     logger.info("Starting mainloop, responding only on events")
-    self._mainloop = gobject.MainLoop()
+    self._mainloop = GLib.MainLoop()
 
     try:
       self._mainloop.run()
@@ -659,14 +659,14 @@ class SmaDriver:
     if(self._safety_off == False):
       #normal running, check for grid not ok AND low Soc, send off message till inverters respond
       if(sma_system["ExtOk"] == 2 and  soc < _cfg_safety["min_soc_inv_off"]):   
-        self._can_bus.send(SMA_OFF_MSG)
+#        self._can_bus.send(SMA_OFF_MSG)
         if(sma_system["State"] == 0):
           self._safety_off = True
         #print("Shut off due to low SoC")
     else:
       #if we saftey shutdown, keep checking for grid restore OR SoC increase, send on message till inverters respond
       if(sma_system["ExtOk"] == 0 or soc >= _cfg_safety["min_soc_inv_off"]):  
-        self._can_bus.send(SMA_ON_MSG)
+#        self._can_bus.send(SMA_ON_MSG)
         if(sma_system["State"] != 0): 
           self._safety_off = False
         #print("Start SMA due to grid restore or SoC increase")
@@ -709,30 +709,30 @@ class SmaDriver:
     #logger.debug(self._can_bus)
 
     try :
-      self._can_bus.send(msg)
+#      self._can_bus.send(msg)
       #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
       time.sleep(.100)
 
-      self._can_bus.send(msg2)
+#      self._can_bus.send(msg2)
       #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
       time.sleep(.100)
 
-      self._can_bus.send(msg3)
-      #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
-
-      time.sleep(.100)
-
-      self._can_bus.send(msg4)
+#      self._can_bus.send(msg3)
       #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
 
       time.sleep(.100)
 
-      self._can_bus.send(msg5)
+#      self._can_bus.send(msg4)
       #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
 
       time.sleep(.100)
 
-      self._can_bus.send(msg6)
+#      self._can_bus.send(msg5)
+      #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
+
+      time.sleep(.100)
+
+#      self._can_bus.send(msg6)
       #logger.debug("Message sent on {}".format(self._can_bus.channel_info))
 
       #logger.info("Sent to SI: {0}, {1}, {2}, {3}, {4}". \
@@ -782,4 +782,3 @@ if __name__ == "__main__":
   print("-------- dbus_SMADriver, v" + softwareVersion + " is shuting down --------")
 
   sys.exit(1)
-
